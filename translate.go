@@ -12,9 +12,9 @@ import (
 const textURL = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&dt=md&dt=ex&sl=%s&tl=%s&q=%s"
 
 type Translation struct {
-	Text string `json:"text"` // translated text
-	POS  string `json:"pos"`  // part of speech breakdown
-	Def  string `json:"def"`  // definitions
+	Text string `json:"text"`          // translated text
+	POS  string `json:"pos,omitempty"` // part of speech breakdown
+	Def  string `json:"def,omitempty"` // definitions
 }
 
 func Translate(srcLangCode, dstLangCode, message string) (*Translation, error) {
