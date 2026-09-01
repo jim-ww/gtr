@@ -9,7 +9,10 @@ import (
 	"net/url"
 )
 
-const textURL = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&dt=md&dt=ex&sl=%s&tl=%s&q=%s"
+const textURLFmt = "https://%s/translate_a/single?client=gtx&dt=t&dt=bd&dt=md&dt=ex&sl=%s&tl=%s&q=%s"
+
+// DefaultHost is the Google Translate host used when none is given.
+const DefaultHost = "translate.google.com"
 
 type Translation struct {
 	Text string `json:"text"`          // translated text
@@ -17,10 +20,13 @@ type Translation struct {
 	Def  string `json:"def,omitempty"` // definitions
 }
 
-func Translate(srcLangCode, dstLangCode, message, proxyURL string) (*Translation, error) {
+func Translate(srcLangCode, dstLangCode, message, proxyURL, host string) (*Translation, error) {
 	translation := new(Translation)
 
-	urlStr := fmt.Sprintf(textURL, srcLangCode, dstLangCode, url.QueryEscape(message))
+	if host == "" {
+		host = DefaultHost
+	}
+	urlStr := fmt.Sprintf(textURLFmt, host, srcLangCode, dstLangCode, url.QueryEscape(message))
 
 	client := http.DefaultClient
 	if proxyURL != "" {
@@ -33,7 +39,13 @@ func Translate(srcLangCode, dstLangCode, message, proxyURL string) (*Translation
 		}
 	}
 
-	res, err := client.Get(urlStr)
+	req, err := http.NewRequest(http.MethodGet, urlStr, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+
+	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}

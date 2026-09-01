@@ -1,0 +1,1 @@
+- fix 429 requests errors. see how noctalia implements google translate

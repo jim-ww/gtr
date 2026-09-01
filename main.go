@@ -60,7 +60,7 @@ func main() {
 		}
 	}
 
-	tr, err := Translate(*from, *to, message, *proxy)
+	tr, err := Translate(*from, *to, message, *proxy, DefaultHost)
 	if err != nil {
 		log.Fatal("translate error:", err)
 	}
