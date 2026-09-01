@@ -47,6 +47,7 @@ gato
 | `-t`     | `en`    | target language code                            |
 | `-json`  | `false` | print output as JSON                            |
 | `-codes` | `false` | print all available language codes and exit     |
+| `-proxy` |         | proxy URL to use for the request, e.g. `http://host:port` (defaults to `HTTP_PROXY`/`HTTPS_PROXY` env vars) |
 
 ## Install
 
