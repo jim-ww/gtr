@@ -17,12 +17,23 @@ type Translation struct {
 	Def  string `json:"def,omitempty"` // definitions
 }
 
-func Translate(srcLangCode, dstLangCode, message string) (*Translation, error) {
+func Translate(srcLangCode, dstLangCode, message, proxyURL string) (*Translation, error) {
 	translation := new(Translation)
 
 	urlStr := fmt.Sprintf(textURL, srcLangCode, dstLangCode, url.QueryEscape(message))
 
-	res, err := http.Get(urlStr)
+	client := http.DefaultClient
+	if proxyURL != "" {
+		proxy, err := url.Parse(proxyURL)
+		if err != nil {
+			return nil, fmt.Errorf("invalid proxy url: %w", err)
+		}
+		client = &http.Client{
+			Transport: &http.Transport{Proxy: http.ProxyURL(proxy)},
+		}
+	}
+
+	res, err := client.Get(urlStr)
 	if err != nil {
 		return nil, err
 	}

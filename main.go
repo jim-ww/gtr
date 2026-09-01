@@ -29,6 +29,7 @@ func main() {
 	to := flag.String("t", "en", "target language code (see -codes)")
 	codes := flag.Bool("codes", false, "print all available language codes and exit")
 	toJSON := flag.Bool("json", false, "enable json output")
+	proxy := flag.String("proxy", "", "proxy URL to use for the request (e.g. http://host:port), defaults to HTTP_PROXY/HTTPS_PROXY env vars")
 	flag.Parse()
 
 	log.SetFlags(0)
@@ -59,7 +60,7 @@ func main() {
 		}
 	}
 
-	tr, err := Translate(*from, *to, message)
+	tr, err := Translate(*from, *to, message, *proxy)
 	if err != nil {
 		log.Fatal("translate error:", err)
 	}
