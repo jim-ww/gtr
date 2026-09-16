@@ -14,17 +14,23 @@ const textURLFmt = "https://%s/translate_a/single?client=gtx&dt=t&dt=bd&dt=md&dt
 // DefaultHost is the Google Translate host used when none is given.
 const DefaultHost = "translate.google.com"
 
+// DefaultUserAgent is the User-Agent header used when none is given.
+const DefaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
 type Translation struct {
 	Text string `json:"text"`          // translated text
 	POS  string `json:"pos,omitempty"` // part of speech breakdown
 	Def  string `json:"def,omitempty"` // definitions
 }
 
-func Translate(srcLangCode, dstLangCode, message, proxyURL, host string) (*Translation, error) {
+func Translate(srcLangCode, dstLangCode, message, proxyURL, host, userAgent string) (*Translation, error) {
 	translation := new(Translation)
 
 	if host == "" {
 		host = DefaultHost
+	}
+	if userAgent == "" {
+		userAgent = DefaultUserAgent
 	}
 	urlStr := fmt.Sprintf(textURLFmt, host, srcLangCode, dstLangCode, url.QueryEscape(message))
 
@@ -43,7 +49,7 @@ func Translate(srcLangCode, dstLangCode, message, proxyURL, host string) (*Trans
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+	req.Header.Set("User-Agent", userAgent)
 
 	res, err := client.Do(req)
 	if err != nil {

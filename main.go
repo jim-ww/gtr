@@ -31,6 +31,7 @@ func main() {
 	toJSON := flag.Bool("json", false, "enable json output")
 	proxy := flag.String("proxy", "", "proxy URL to use for the request (e.g. http://host:port), defaults to HTTP_PROXY/HTTPS_PROXY env vars")
 	host := flag.String("host", DefaultHost, "Google Translate API host to use (e.g. translate.googleapis.com)")
+	userAgent := flag.String("user-agent", DefaultUserAgent, "User-Agent header to send with the request")
 	flag.Parse()
 
 	log.SetFlags(0)
@@ -61,7 +62,7 @@ func main() {
 		}
 	}
 
-	tr, err := Translate(*from, *to, message, *proxy, *host)
+	tr, err := Translate(*from, *to, message, *proxy, *host, *userAgent)
 	if err != nil {
 		log.Fatal("translate error:", err)
 	}
